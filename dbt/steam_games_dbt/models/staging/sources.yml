@@ -1,0 +1,13 @@
+version: 2.0
+
+sources:
+  - name: raw_steam
+    description: "Raw Steam data source"
+    schema: raw_steam
+    tables:
+      - name: steam_catalog
+        description: "Raw Steam catalog table"
+      - name: steam_appdetails
+        description: "Raw Steam app details table"
+      - name: steam_reviews
+        description: "Raw Steam reviews table"

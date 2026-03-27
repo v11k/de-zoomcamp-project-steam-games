@@ -1,0 +1,124 @@
+[0m13:05:55.032861 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f9ae6bc32c0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f9ae6bc0a10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f9ae6a76cc0>]}
+
+
+============================== 13:05:55.122965 | 9e96ac47-9903-4e6c-ba8c-9edc7c4ab19f ==============================
+[0m13:05:55.122965 [info ] [MainThread]: Running with dbt=1.11.7
+[0m13:05:55.123625 [debug] [MainThread]: running dbt with arguments {'log_cache_events': 'False', 'debug': 'False', 'no_print': 'None', 'invocation_command': 'dbt init', 'use_colors': 'True', 'send_anonymous_usage_stats': 'True', 'log_format': 'default', 'quiet': 'False', 'printer_width': '80', 'indirect_selection': 'eager', 'static_parser': 'True', 'profiles_dir': '/root/.dbt', 'version_check': 'True', 'empty': 'None', 'log_path': 'logs', 'target_path': 'None', 'partial_parse': 'True', 'write_json': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'introspect': 'True', 'cache_selected_only': 'False', 'warn_error': 'None', 'use_experimental_parser': 'False', 'fail_fast': 'False'}
+[0m13:06:14.952565 [debug] [MainThread]: Starter project path: /root/projects/data-eng-zoomcamp/steam_games/dbt/.venv/lib/python3.12/site-packages/dbt/include/starter_project
+[0m13:06:14.957220 [info ] [MainThread]: 
+Your new dbt project "steam_games_dbt" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m13:06:14.957576 [info ] [MainThread]: Setting up your profile.
+[0m13:07:33.014750 [info ] [MainThread]: Profile steam_games_dbt written to /root/.dbt/profiles.yml using target's profile_template.yml and your supplied values. Run 'dbt debug' to validate the connection.
+[0m13:07:33.015813 [debug] [MainThread]: Resource report: {"command_name": "init", "command_success": true, "command_wall_clock_time": 98.03028, "process_in_blocks": "1992", "process_kernel_time": 1.448868, "process_mem_max_rss": "232116", "process_out_blocks": "74104", "process_user_time": 4.695126}
+[0m13:07:33.016582 [debug] [MainThread]: Command `dbt init` succeeded at 13:07:33.016470 after 98.03 seconds
+[0m13:07:33.016961 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f9ae4b9a5d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f9ad0320830>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f9ae69f0e30>]}
+[0m13:07:33.017370 [debug] [MainThread]: Flushing usage events
+[0m13:07:33.417955 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m13:07:38.843219 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f9b90ce82c0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f9b8e296270>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f9b900dbe90>]}
+
+
+============================== 13:07:38.846090 | 5f546e46-863e-4052-8e64-eac50c165842 ==============================
+[0m13:07:38.846090 [info ] [MainThread]: Running with dbt=1.11.7
+[0m13:07:38.846442 [debug] [MainThread]: running dbt with arguments {'version_check': 'True', 'partial_parse': 'True', 'no_print': 'None', 'static_parser': 'True', 'target_path': 'None', 'profiles_dir': '/root/.dbt', 'fail_fast': 'False', 'log_cache_events': 'False', 'use_experimental_parser': 'False', 'cache_selected_only': 'False', 'quiet': 'False', 'use_colors': 'True', 'empty': 'None', 'indirect_selection': 'eager', 'write_json': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'send_anonymous_usage_stats': 'True', 'invocation_command': 'dbt debug', 'introspect': 'True', 'printer_width': '80', 'debug': 'False', 'log_path': 'logs', 'warn_error': 'None', 'log_format': 'default'}
+[0m13:07:38.856808 [info ] [MainThread]: dbt version: 1.11.7
+[0m13:07:38.857235 [info ] [MainThread]: python version: 3.12.13
+[0m13:07:38.857509 [info ] [MainThread]: python path: /root/projects/data-eng-zoomcamp/steam_games/dbt/.venv/bin/python3
+[0m13:07:38.857773 [info ] [MainThread]: os info: Linux-6.12.73+deb13-amd64-x86_64-with-glibc2.41
+[0m13:07:39.734580 [info ] [MainThread]: Using profiles dir at /root/.dbt
+[0m13:07:39.735064 [info ] [MainThread]: Using profiles.yml file at /root/.dbt/profiles.yml
+[0m13:07:39.735273 [info ] [MainThread]: Using dbt_project.yml file at /root/projects/data-eng-zoomcamp/steam_games/dbt/dbt_project.yml
+[0m13:07:39.735453 [info ] [MainThread]: adapter type: bigquery
+[0m13:07:39.735616 [info ] [MainThread]: adapter version: 1.11.1
+[0m13:07:39.735806 [info ] [MainThread]: Configuration:
+[0m13:07:39.735964 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m13:07:39.736114 [info ] [MainThread]:   dbt_project.yml file [[31mERROR not found[0m]
+[0m13:07:39.736257 [info ] [MainThread]: Required dependencies:
+[0m13:07:39.736426 [debug] [MainThread]: Executing "git --help"
+[0m13:07:39.740354 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]\n           [--no-optional-locks] [--no-advice] [--bare] [--git-dir=<path>]\n           [--work-tree=<path>] [--namespace=<name>] [--config-env=<name>=<envvar>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone     Clone a repository into a new directory\n   init      Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add       Add file contents to the index\n   mv        Move or rename a file, a directory, or a symlink\n   restore   Restore working tree files\n   rm        Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect    Use binary search to find the commit that introduced a bug\n   diff      Show changes between commits, commit and working tree, etc\n   grep      Print lines matching a pattern\n   log       Show commit logs\n   show      Show various types of objects\n   status    Show the working tree status\n\ngrow, mark and tweak your common history\n   branch    List, create, or delete branches\n   commit    Record changes to the repository\n   merge     Join two or more development histories together\n   rebase    Reapply commits on top of another base tip\n   reset     Reset current HEAD to the specified state\n   switch    Switch branches\n   tag       Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch     Download objects and refs from another repository\n   pull      Fetch from and integrate with another repository or a local branch\n   push      Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m13:07:39.740635 [debug] [MainThread]: STDERR: "b''"
+[0m13:07:39.740832 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m13:07:39.741008 [info ] [MainThread]: Connection:
+[0m13:07:39.741185 [info ] [MainThread]:   method: service-account
+[0m13:07:39.741344 [info ] [MainThread]:   database: project-312c46a2-5c11-4dab-b73
+[0m13:07:39.741488 [info ] [MainThread]:   execution_project: project-312c46a2-5c11-4dab-b73
+[0m13:07:39.741644 [info ] [MainThread]:   schema: dbt_steam
+[0m13:07:39.741802 [info ] [MainThread]:   location: EU
+[0m13:07:39.741943 [info ] [MainThread]:   priority: interactive
+[0m13:07:39.742100 [info ] [MainThread]:   maximum_bytes_billed: None
+[0m13:07:39.742329 [info ] [MainThread]:   impersonate_service_account: None
+[0m13:07:39.742498 [info ] [MainThread]:   job_retry_deadline_seconds: None
+[0m13:07:39.742648 [info ] [MainThread]:   job_retries: 1
+[0m13:07:39.742823 [info ] [MainThread]:   job_creation_timeout_seconds: None
+[0m13:07:39.742979 [info ] [MainThread]:   job_execution_timeout_seconds: 300
+[0m13:07:39.743215 [info ] [MainThread]:   timeout_seconds: 300
+[0m13:07:39.743421 [info ] [MainThread]:   client_id: None
+[0m13:07:39.743632 [info ] [MainThread]:   token_uri: None
+[0m13:07:39.743820 [info ] [MainThread]:   compute_region: None
+[0m13:07:39.744027 [info ] [MainThread]:   dataproc_cluster_name: None
+[0m13:07:39.744227 [info ] [MainThread]:   gcs_bucket: None
+[0m13:07:39.744450 [info ] [MainThread]:   dataproc_batch: None
+[0m13:07:39.744775 [info ] [MainThread]: Registered adapter: bigquery=1.11.1
+[0m13:07:39.870402 [debug] [MainThread]: Acquiring new bigquery connection 'debug'
+[0m13:07:39.870776 [debug] [MainThread]: On debug: select 1 as id
+[0m13:07:39.871054 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m13:07:40.415046 [debug] [MainThread]: BigQuery adapter: https://console.cloud.google.com/bigquery?project=project-312c46a2-5c11-4dab-b73&j=bq:EU:98cbf174-15bf-49d8-938b-cfe56bdcaf30&page=queryresults
+[0m13:07:40.582952 [debug] [MainThread]: SQL status: OK in 0.167 seconds
+[0m13:07:40.758532 [info ] [MainThread]:   Connection test: [[32mOK connection ok[0m]
+
+[0m13:07:40.759004 [info ] [MainThread]: [31m1 check failed:[0m
+[0m13:07:40.759232 [info ] [MainThread]: Project loading failed for the following reason:
+ project path </root/projects/data-eng-zoomcamp/steam_games/dbt/dbt_project.yml> not found
+
+[0m13:07:40.759673 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": false, "command_wall_clock_time": 1.9599073, "process_in_blocks": "280", "process_kernel_time": 0.499502, "process_mem_max_rss": "234552", "process_out_blocks": "344", "process_user_time": 2.188364}
+[0m13:07:40.760006 [debug] [MainThread]: Command `dbt debug` failed at 13:07:40.759943 after 1.96 seconds
+[0m13:07:40.760234 [debug] [MainThread]: Connection 'debug' was properly closed.
+[0m13:07:40.760471 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f9b72c62e10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f9b8e0f4080>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f9b8e0f40e0>]}
+[0m13:07:40.760818 [debug] [MainThread]: Flushing usage events
+[0m13:07:41.160302 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m14:38:10.980724 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f10bb057f50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f10b8966f90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f10b911b680>]}
+
+
+============================== 14:38:10.984198 | 03e5d5db-0a06-4b04-91fa-c7e198ba2333 ==============================
+[0m14:38:10.984198 [info ] [MainThread]: Running with dbt=1.11.7
+[0m14:38:10.984593 [debug] [MainThread]: running dbt with arguments {'invocation_command': 'dbt build', 'log_cache_events': 'False', 'profiles_dir': '/root/.dbt', 'introspect': 'True', 'write_json': 'True', 'use_colors': 'True', 'quiet': 'False', 'fail_fast': 'False', 'printer_width': '80', 'cache_selected_only': 'False', 'log_format': 'default', 'log_path': 'logs', 'partial_parse': 'True', 'no_print': 'None', 'empty': 'False', 'warn_error': 'None', 'indirect_selection': 'eager', 'debug': 'False', 'version_check': 'True', 'static_parser': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'target_path': 'None', 'send_anonymous_usage_stats': 'True', 'use_experimental_parser': 'False'}
+[0m14:38:10.984924 [error] [MainThread]: Encountered an error:
+Runtime Error
+  No dbt_project.yml found at expected path /root/projects/data-eng-zoomcamp/steam_games/dbt/dbt_project.yml
+  Verify that each entry within packages.yml (and their transitive dependencies) contains a file named dbt_project.yml
+  
+[0m14:38:10.985424 [debug] [MainThread]: Resource report: {"command_name": "build", "command_success": false, "command_wall_clock_time": 0.048822124, "process_in_blocks": "0", "process_kernel_time": 0.218496, "process_mem_max_rss": "101864", "process_out_blocks": "16", "process_user_time": 1.068643}
+[0m14:38:10.985764 [debug] [MainThread]: Command `dbt build` failed at 14:38:10.985697 after 0.05 seconds
+[0m14:38:10.986026 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f10b8966f90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f10b940f8f0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f10bb057f50>]}
+[0m14:38:10.986286 [debug] [MainThread]: Flushing usage events
+[0m14:38:11.362470 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m09:44:51.200729 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f12adbdde80>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f12ad196120>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f12abb4d910>]}
+
+
+============================== 09:44:51.211221 | 2c60da2c-9c57-4fcf-b046-fcb5663e9fa2 ==============================
+[0m09:44:51.211221 [info ] [MainThread]: Running with dbt=1.11.7
+[0m09:44:51.211756 [debug] [MainThread]: running dbt with arguments {'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'empty': 'False', 'warn_error': 'None', 'version_check': 'True', 'log_path': 'logs', 'use_experimental_parser': 'False', 'write_json': 'True', 'invocation_command': 'dbt build', 'static_parser': 'True', 'partial_parse': 'True', 'no_print': 'None', 'fail_fast': 'False', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'debug': 'False', 'cache_selected_only': 'False', 'target_path': 'None', 'introspect': 'True', 'log_cache_events': 'False', 'indirect_selection': 'eager', 'use_colors': 'True', 'log_format': 'default', 'profiles_dir': '/root/.dbt', 'printer_width': '80'}
+[0m09:44:51.212129 [error] [MainThread]: Encountered an error:
+Runtime Error
+  No dbt_project.yml found at expected path /root/projects/data-eng-zoomcamp/steam_games/dbt/dbt_project.yml
+  Verify that each entry within packages.yml (and their transitive dependencies) contains a file named dbt_project.yml
+  
+[0m09:44:51.212760 [debug] [MainThread]: Resource report: {"command_name": "build", "command_success": false, "command_wall_clock_time": 0.053670727, "process_in_blocks": "0", "process_kernel_time": 0.621638, "process_mem_max_rss": "102096", "process_out_blocks": "8", "process_user_time": 1.189793}
+[0m09:44:51.213077 [debug] [MainThread]: Command `dbt build` failed at 09:44:51.213012 after 0.05 seconds
+[0m09:44:51.213306 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f12ab2787a0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f12ab70cfe0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f12aadf6210>]}
+[0m09:44:51.213545 [debug] [MainThread]: Flushing usage events
+[0m09:44:51.647767 [debug] [MainThread]: An error was encountered while trying to flush usage events
