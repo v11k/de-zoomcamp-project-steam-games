@@ -10,7 +10,7 @@ last_ingestion as (
     group by appid
 )
 
-select
+select distinct
     s.appid,
     s.total_reviews,
     s.good_reviews,

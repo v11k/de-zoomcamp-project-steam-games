@@ -14,3 +14,19 @@ Runtime Error
 [0m14:37:57.794706 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f2b5849c7d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f2b58f312b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f2b592be0f0>]}
 [0m14:37:57.795013 [debug] [MainThread]: Flushing usage events
 [0m14:37:58.197585 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m10:49:20.708239 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb4c03bc110>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb4c27f36e0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb4c0282000>]}
+
+
+============================== 10:49:20.713147 | ff7652b1-97c0-48e0-a60f-455d3f34bdf9 ==============================
+[0m10:49:20.713147 [info ] [MainThread]: Running with dbt=1.11.7
+[0m10:49:20.713660 [debug] [MainThread]: running dbt with arguments {'version_check': 'True', 'use_colors': 'True', 'printer_width': '80', 'target_path': 'None', 'indirect_selection': 'eager', 'invocation_command': 'dbt build --select mart_steam_details_reviews', 'fail_fast': 'False', 'no_print': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'log_path': 'logs', 'partial_parse': 'True', 'introspect': 'True', 'use_experimental_parser': 'False', 'cache_selected_only': 'False', 'quiet': 'False', 'empty': 'False', 'log_format': 'default', 'send_anonymous_usage_stats': 'True', 'write_json': 'True', 'log_cache_events': 'False', 'static_parser': 'True', 'debug': 'False', 'profiles_dir': '/root/.dbt', 'warn_error': 'None'}
+[0m10:49:20.714088 [error] [MainThread]: Encountered an error:
+Runtime Error
+  No dbt_project.yml found at expected path /root/projects/data-eng-zoomcamp/steam_games/dbt_project.yml
+  Verify that each entry within packages.yml (and their transitive dependencies) contains a file named dbt_project.yml
+  
+[0m10:49:20.714740 [debug] [MainThread]: Resource report: {"command_name": "build", "command_success": false, "command_wall_clock_time": 0.061841734, "process_in_blocks": "25624", "process_kernel_time": 0.303501, "process_mem_max_rss": "101764", "process_out_blocks": "16", "process_user_time": 1.280994}
+[0m10:49:20.715186 [debug] [MainThread]: Command `dbt build` failed at 10:49:20.715101 after 0.06 seconds
+[0m10:49:20.715496 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb4c0abe3f0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb4bfce7ec0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb4bfce7e90>]}
+[0m10:49:20.715819 [debug] [MainThread]: Flushing usage events
+[0m10:49:21.145380 [debug] [MainThread]: An error was encountered while trying to flush usage events
