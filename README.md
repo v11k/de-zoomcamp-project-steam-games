@@ -21,8 +21,13 @@ This project solves the following:
 ### Key challenge
 
 Steam’s API endpoints for game details and reviews are rate-limited, making full refreshes inefficient.
+With Steam's limitation of 200 requests per 5 minutes, it takes about 10 days to fetch the appdetails and reviews for the whole Steam catalog.
+I didn't have time to fetch everything, so the dataset will not be realistic, but the whole pipeline works.
 
 ### Solution
+
+If you can fetch the details for the whole catalog (running it for about 10 days), after that you only need to fetch new games, so scripts can run daily.
+For the purpose of peer-reviewing, if you'd like to replicate the pipeline, I encourage you to use the sample datasets provided.
 
 This pipeline uses an incremental append-only approach:
 
@@ -33,6 +38,9 @@ This pipeline uses an incremental append-only approach:
 
 This allows the pipeline to scale while respecting API limits.
 
+### Dashboard
+[Open Dashboard in Looker Studio](https://lookerstudio.google.com/reporting/bf78e0c8-a795-4070-aeb0-f184cd471ef9)
+![Dashboard](pics/looker_studio.png)
 ---
 
 ## Architecture
@@ -45,23 +53,29 @@ Steam API
 → gcs_to_bq.py → BigQuery (raw tables)  
 → dbt → marts → dashboard  
 
+![Workflow chart](pics/architecture.png)
+![dbt lineage](pics/dbt_lineage.png)
 ---
 
 ## Technologies
 
-- Python
+- Python (API requests, loading)
 - uv (environment management)
-- Google Cloud Storage
-- BigQuery
-- dbt
+- Google Cloud Storage (lake storage)
+- BigQuery (structured data storage)
+- dbt (create, transform SQL models)
 - cron (scheduling)
 - JSONL (raw storage)
+- Google Looker Studio (dashboard, visualization)
 
 ---
 
 ## Data ingestion
 
 ### Steam catalog
+
+This is the endpoint for the  game IDs and names, without any additional information.
+This can be fetched very quickly, giving us about 160.000 games at the time of this execution.
 
 Endpoint:
 IStoreService/GetAppList
@@ -72,13 +86,13 @@ data/raw/steam_catalog/steam_catalog_YYYY-MM-DD.jsonl
 Contains:
 - appid
 - name
-- last_modified
-- price_change_number
-- raw payload
 
 ---
 
 ### Steam app details
+
+Games have to be fetched by each ID, consuming 1 request per game.
+Contains most of the information about the games, except for reviews.
 
 Endpoint:
 /api/appdetails
@@ -99,7 +113,10 @@ Fields include:
 
 ---
 
-### Steam review summaries
+### Steam reviews
+
+Games have to be fetched by each ID, consuming 1 request per game.
+Contains review information.
 
 Endpoint:
 /appreviews/{appid}
@@ -136,7 +153,7 @@ Day 2: 160200 apps → only 200 new processed
 ### Tradeoff
 
 - Efficient and scalable
-- Old data is not automatically refreshed
+- Old data is not automatically refreshed - Still very useful for analyzing year-by-year trends
 
 ---
 
@@ -259,15 +276,15 @@ Meaning:
 .
 ├── data/
 ├── dbt/
-├── infra/cron/
 ├── scripts/
-├── .env.example
+├── .env
 ├── pyproject.toml
+├── crontab.txt
 └── README.md
 
 ---
 
-## Reproducibility
+## Reproducibility - How to guide
 
 ### 1. Clone repo
 
@@ -284,45 +301,40 @@ uv sync
 
 ---
 
-### 3. Setup dbt
+### 3. Setup dbt and dbt venv
 
-python -m venv dbt_venv  
-source dbt_venv/bin/activate  
-pip install dbt-bigquery  
+cd dbt
+python -m venv .venv
+source .venv/bin/activate
+pip install dbt-bigquery
 
+Set up bigquery connector in dbt's profiles.yml
 ---
 
 ### 4. Configure environment
 
 cp .env.example .env  
 
-Fill:
-- Steam API key
-- GCP credentials
-- BigQuery config
+Fill in the required fields, self-explanatory
 
 ---
 
-## Run pipeline manually
+### 5. Run pipeline manually
+Optional / not recommended: Start fetching Steam data
+- python scripts/ingest_game_list.py
+- python scripts/ingest_game_details.py
+- python scripts/ingest_game_reviews.py
 
-python scripts/ingest_game_list.py --date 2026-03-28  
-python scripts/ingest_game_details.py --date 2026-03-28  
-python scripts/ingest_game_reviews.py --date 2026-03-28  
-python scripts/upload_raw_to_gcs.py --date 2026-03-28  
-python scripts/gcs_to_bq.py --date 2026-03-28  
-
+Recommended - Use sample data:
+- rename "sample_data" folder to "data"
+- python scripts/upload_raw_to_gcs.py --date 2026-03-28  
+- python scripts/gcs_to_bq.py --date 2026-03-28  
 cd dbt  
-dbt build --profiles-dir .  
+source .venv/bin/activate
+dbt build
 
----
-
-## Important BigQuery note
-
-BigQuery load jobs do not apply default column values.
-
-Therefore:
-- ingestion timestamps must be added in Python
-- or handled after load with SQL
+### 6. Visualize
+Connect BigQuery to Looker Studio and start building visuals
 
 ---
 
@@ -337,39 +349,14 @@ Therefore:
 
 ## Future improvements
 
-- add Terraform
-- implement refresh logic
+- create robust scheduling
+- implement logging
 - add dbt tests
-- add monitoring
 - expand dashboard
 
 ---
 
-## Evaluation criteria mapping
-
-Problem description:
-Clear explanation of the data problem and solution.
-
-Cloud:
-Uses Google Cloud Storage and BigQuery.
-
-Batch pipeline:
-End-to-end ingestion → storage → warehouse → transformation.
-
-Data warehouse:
-Partitioned and clustered tables with justification.
-
-Transformations:
-Implemented with dbt.
-
-Dashboard:
-Includes multiple analytical tiles.
-
-Reproducibility:
-Complete setup and execution instructions provided.
-
----
 
 ## Author
-
+Viktor Likár
 Data Engineering Zoomcamp Project
