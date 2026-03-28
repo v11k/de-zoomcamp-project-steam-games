@@ -55,7 +55,6 @@ Steam API
 
 ![Workflow chart](pics/architecture.png)
 ![dbt lineage](pics/dbt_lineage.png)
----
 
 ## Technologies
 
@@ -68,7 +67,6 @@ Steam API
 - JSONL (raw storage)
 - Google Looker Studio (dashboard, visualization)
 
----
 
 ## Data ingestion
 
@@ -86,8 +84,6 @@ data/raw/steam_catalog/steam_catalog_YYYY-MM-DD.jsonl
 Contains:
 - appid
 - name
-
----
 
 ### Steam app details
 
@@ -111,8 +107,6 @@ Fields include:
 - metacritic
 - recommendations
 
----
-
 ### Steam reviews
 
 Games have to be fetched by each ID, consuming 1 request per game.
@@ -131,11 +125,7 @@ Fields include:
 - review_score
 - review_score_desc
 
----
-
 ## Incremental logic
-
-This is the most important design decision.
 
 ### Behavior
 
@@ -155,7 +145,6 @@ Day 2: 160200 apps → only 200 new processed
 - Efficient and scalable
 - Old data is not automatically refreshed - Still very useful for analyzing year-by-year trends
 
----
 
 ## Cloud
 
@@ -167,16 +156,12 @@ data/raw/steam_catalog/
 data/raw/steam_appdetails/  
 data/raw/steam_reviews/  
 
----
-
 ### BigQuery (data warehouse)
 
 Tables:
 - raw_steam.steam_catalog
 - raw_steam.steam_appdetails
 - raw_steam.steam_reviews
-
----
 
 ## Data warehouse design
 
@@ -188,12 +173,10 @@ All tables are partitioned by ingestion date.
 
 All tables are clustered by appid.
 
-### Why this works
+### Reasoning
 
 - Queries filter by date → partitioning reduces scan cost
 - Joins use appid → clustering improves performance
-
----
 
 ## Transformations (dbt)
 
@@ -214,21 +197,6 @@ Marts:
 - release trends
 - review metrics
 
----
-
-## Dashboard
-
-At least 2 tiles:
-
-- Genre distribution
-- Release trend or review analysis
-
-Optional:
-- free vs paid games
-- average price by genre
-- review score distribution
-
----
 
 ## Workflow orchestration
 
@@ -251,38 +219,6 @@ ingest_game_list.py
 
 ---
 
-## Cron scheduling
-
-Example file:
-infra/cron/crontab.txt
-
-Install:
-
-crontab infra/cron/crontab.txt
-
-Example entry:
-
-0 2 * * * cd /path/to/project && /path/to/project/.venv/bin/python scripts/ingest_game_list.py --date $(date -u +\%F)
-
-Meaning:
-- runs daily at 02:00 UTC
-- uses project virtual environment
-- passes current date
-
----
-
-## Repository structure
-
-.
-├── data/
-├── dbt/
-├── scripts/
-├── .env
-├── pyproject.toml
-├── crontab.txt
-└── README.md
-
----
 
 ## Reproducibility - How to guide
 
@@ -291,15 +227,11 @@ Meaning:
 git clone <repo-url>  
 cd <repo>  
 
----
-
 ### 2. Setup ingestion environment
 
 uv venv  
 source .venv/bin/activate  
 uv sync  
-
----
 
 ### 3. Setup dbt and dbt venv
 
@@ -309,15 +241,12 @@ source .venv/bin/activate
 pip install dbt-bigquery
 
 Set up bigquery connector in dbt's profiles.yml
----
 
 ### 4. Configure environment
 
 cp .env.example .env  
 
 Fill in the required fields, self-explanatory
-
----
 
 ### 5. Run pipeline manually
 Optional / not recommended: Start fetching Steam data
@@ -336,16 +265,12 @@ dbt build
 ### 6. Visualize
 Connect BigQuery to Looker Studio and start building visuals
 
----
-
 ## Limitations
 
 - no automatic refresh for old games
 - initial backfill is slow due to API limits
 - infrastructure is manually configured (no IaC)
 - cron does not enforce strict dependencies
-
----
 
 ## Future improvements
 
