@@ -9,14 +9,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 STEAM_API_KEY = os.getenv("STEAM_API_KEY")
-
+BASE_DIR = Path(__file__).resolve().parent.parent
 BASE_URL = "https://api.steampowered.com/IStoreService/GetAppList/v1/"
 MAX_RESULTS = 50_000
 REQUEST_TIMEOUT = 60
 SLEEP_SECONDS = 1
 
-OUTPUT_DIR = Path("data/raw/steam_catalog")
-
+OUTPUT_DIR = BASE_DIR / "data" / "raw" / "steam_catalog"
 
 def get_page(last_appid: int = 0) -> dict:
     if not STEAM_API_KEY:

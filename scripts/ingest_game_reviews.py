@@ -10,9 +10,10 @@ from typing import Optional
 import requests
 from requests import Response, Session
 
-CATALOG_DIR = Path("data/raw/steam_catalog")
-OUTPUT_DIR = Path("data/raw/steam_reviews")
-FAILED_DIR = Path("data/raw/steam_reviews_failed")
+BASE_DIR = Path(__file__).resolve().parent.parent
+CATALOG_DIR = BASE_DIR / "data" / "raw" / "steam_catalog"
+OUTPUT_DIR = BASE_DIR / "data" / "raw" / "steam_reviews"
+FAILED_DIR = BASE_DIR / "data" / "raw" / "steam_reviews_failed"
 
 APPREVIEWS_URL_TEMPLATE = "https://store.steampowered.com/appreviews/{appid}"
 
@@ -33,7 +34,7 @@ def parse_args() -> argparse.Namespace:
         "--date",
         type=valid_date,
         default=datetime.now(timezone.utc).strftime("%Y-%m-%d"),
-        help="Partition date in YYYY-MM-DD format. Defaults to today's UTC date.",
+        help="Catalog date in YYYY-MM-DD format. Defaults to today's UTC date.",
     )
     parser.add_argument(
         "--limit",
@@ -80,7 +81,7 @@ def read_appids_from_catalog(catalog_file: Path) -> list[int]:
     return list(dict.fromkeys(appids))
 
 
-def get_processed_appids(output_path: Path) -> set[int]:
+def get_processed_appids_from_file(output_path: Path) -> set[int]:
     processed = set()
 
     if not output_path.exists():
@@ -91,10 +92,32 @@ def get_processed_appids(output_path: Path) -> set[int]:
             try:
                 row = json.loads(line)
                 appid = row.get("appid")
-                if appid is not None:
+                success = row.get("success", False)
+                if appid is not None and success:
                     processed.add(int(appid))
             except json.JSONDecodeError:
                 continue
+
+    return processed
+
+
+def get_all_processed_appids(output_dir: Path, exclude_file: Optional[Path] = None) -> set[int]:
+    processed = set()
+
+    for file_path in sorted(output_dir.glob("steam_reviews_*.jsonl")):
+        if exclude_file is not None and file_path.resolve() == exclude_file.resolve():
+            continue
+
+        with file_path.open("r", encoding="utf-8") as f:
+            for line in f:
+                try:
+                    row = json.loads(line)
+                    appid = row.get("appid")
+                    success = row.get("success", False)
+                    if appid is not None and success:
+                        processed.add(int(appid))
+                except json.JSONDecodeError:
+                    continue
 
     return processed
 
@@ -143,13 +166,6 @@ def get_retry_after_seconds(response: Response) -> Optional[float]:
 def fetch_appreviews_summary(session: Session, rate_limiter: RateLimiter, appid: int) -> dict:
     """
     Fetch only the review summary for an app.
-
-    Steam's appreviews endpoint exposes query_summary fields like:
-    - total_positive
-    - total_negative
-    - total_reviews
-
-    We keep num_per_page=0 because we only want summary metadata, not review text.
     """
     url = APPREVIEWS_URL_TEMPLATE.format(appid=appid)
     params = {
@@ -199,25 +215,18 @@ def extract_row(appid: int, payload: dict, ingested_at: str, partition_date: str
 
     query_summary = payload.get("query_summary", {}) if success else {}
 
-    total_reviews = query_summary.get("total_reviews")
-    total_positive = query_summary.get("total_positive")
-    total_negative = query_summary.get("total_negative")
-    review_score = query_summary.get("review_score")
-    review_score_desc = query_summary.get("review_score_desc")
-    num_reviews = query_summary.get("num_reviews")
-
     return {
         "ingested_at": ingested_at,
         "ingestion_date": partition_date,
         "source": "steam_store_appreviews",
         "appid": appid,
         "success": success,
-        "total_reviews": total_reviews,
-        "good_reviews": total_positive,
-        "bad_reviews": total_negative,
-        "review_score": review_score,
-        "review_score_desc": review_score_desc,
-        "num_reviews_returned": num_reviews,
+        "total_reviews": query_summary.get("total_reviews"),
+        "good_reviews": query_summary.get("total_positive"),
+        "bad_reviews": query_summary.get("total_negative"),
+        "review_score": query_summary.get("review_score"),
+        "review_score_desc": query_summary.get("review_score_desc"),
+        "num_reviews_returned": query_summary.get("num_reviews"),
         "raw": query_summary if success else None,
         "error_payload": None if success else payload,
     }
@@ -268,7 +277,7 @@ def main() -> None:
         catalog_file = get_latest_catalog_file()
         print(f"No catalog file for {args.date}. Falling back to latest: {catalog_file}")
 
-    appids = read_appids_from_catalog(catalog_file)
+    catalog_appids = read_appids_from_catalog(catalog_file)
 
     partition_date = args.date
     ingested_at = datetime.now(timezone.utc).isoformat()
@@ -276,21 +285,29 @@ def main() -> None:
     output_path = OUTPUT_DIR / f"steam_reviews_{partition_date}.jsonl"
     failed_path = FAILED_DIR / f"steam_reviews_failed_{partition_date}.txt"
 
-    processed_appids = get_processed_appids(output_path)
-    if processed_appids:
-        print(f"Found {len(processed_appids)} already processed appids in {output_path}")
+    historically_processed_appids = get_all_processed_appids(
+        OUTPUT_DIR,
+        exclude_file=output_path if output_path.exists() else None,
+    )
+    today_processed_appids = get_processed_appids_from_file(output_path)
 
-    appids = [appid for appid in appids if appid not in processed_appids]
+    already_processed_appids = historically_processed_appids | today_processed_appids
+
+    print(f"Catalog contains {len(catalog_appids)} appids")
+    print(f"Historically processed appids: {len(historically_processed_appids)}")
+    print(f"Already processed in today's file: {len(today_processed_appids)}")
+
+    appids = [appid for appid in catalog_appids if appid not in already_processed_appids]
 
     if args.limit is not None:
         appids = appids[:args.limit]
 
     total = len(appids)
     if total == 0:
-        print("No appids left to process.")
+        print("No new appids left to process.")
         return
 
-    print(f"Starting/resuming review summary ingestion for {total} appids")
+    print(f"Starting incremental review summary ingestion for {total} new appids")
     print(f"Rate limiter: {RATE_LIMIT_REQUESTS} requests / {RATE_LIMIT_WINDOW_SECONDS} seconds")
 
     session = requests.Session()

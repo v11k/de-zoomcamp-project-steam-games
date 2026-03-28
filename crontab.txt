@@ -1,0 +1,9 @@
+SHELL=/bin/bash
+PATH=/usr/local/bin:/usr/bin:/bin
+
+0 2 * * * cd /path/to/steam-project && /path/to/steam-project/.venv/bin/python scripts/ingest_game_list.py >> /path/to/steam-project/logs/cron_ingest_game_list.log 2>&1
+30 2 * * * cd /path/to/steam-project && /path/to/steam-project/.venv/bin/python scripts/ingest_game_details.py --date $(date -u +\%F) >> /path/to/steam-project/logs/cron_ingest_game_details.log 2>&1
+30 2 * * * cd /path/to/steam-project && /path/to/steam-project/.venv/bin/python scripts/ingest_game_reviews.py --date $(date -u +\%F) >> /path/to/steam-project/logs/cron_ingest_game_reviews.log 2>&1
+0 5 * * * cd /path/to/steam-project && /path/to/steam-project/.venv/bin/python scripts/upload_raw_to_gcs.py  >> /path/to/steam-project/logs/cron_upload_raw_to_gcs.log 2>&1
+30 5 * * * cd /path/to/steam-project && /path/to/steam-project/.venv/bin/python scripts/gcs_to_bq.py  >> /path/to/steam-project/logs/cron_gcs_to_bq.log 2>&1
+0 6 * * * cd /path/to/steam-project/dbt && /path/to/steam-project/dbt_venv/bin/dbt build --profiles-dir . >> /path/to/steam-project/logs/cron_dbt_build.log 2>&1

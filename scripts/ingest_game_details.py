@@ -10,9 +10,10 @@ from typing import Optional
 import requests
 from requests import Response, Session
 
-CATALOG_DIR = Path("data/raw/steam_catalog")
-OUTPUT_DIR = Path("data/raw/steam_appdetails")
-FAILED_DIR = Path("data/raw/steam_appdetails_failed")
+BASE_DIR = Path(__file__).resolve().parent.parent
+CATALOG_DIR = BASE_DIR / "data" / "raw" / "steam_catalog"
+OUTPUT_DIR = BASE_DIR / "data" / "raw" / "steam_appdetails"
+FAILED_DIR = BASE_DIR / "data" / "raw" / "steam_appdetails_failed"
 
 APPDETAILS_URL = "https://store.steampowered.com/api/appdetails"
 COUNTRY_CODE = "us"
@@ -21,7 +22,6 @@ LANGUAGE = "english"
 REQUEST_TIMEOUT = 30
 CHECKPOINT_EVERY = 200
 
-# Observed-safe limiter
 RATE_LIMIT_REQUESTS = 180
 RATE_LIMIT_WINDOW_SECONDS = 300
 
@@ -36,7 +36,7 @@ def parse_args() -> argparse.Namespace:
         "--date",
         type=valid_date,
         default=datetime.now(timezone.utc).strftime("%Y-%m-%d"),
-        help="Partition date in YYYY-MM-DD format. Defaults to today's UTC date.",
+        help="Catalog date in YYYY-MM-DD format. Defaults to today's UTC date.",
     )
     parser.add_argument(
         "--limit",
@@ -79,11 +79,10 @@ def read_appids_from_catalog(catalog_file: Path) -> list[int]:
             if appid is not None:
                 appids.append(int(appid))
 
-    # preserve order, remove duplicates
     return list(dict.fromkeys(appids))
 
 
-def get_processed_appids(output_path: Path) -> set[int]:
+def get_processed_appids_from_file(output_path: Path) -> set[int]:
     processed = set()
 
     if not output_path.exists():
@@ -94,10 +93,32 @@ def get_processed_appids(output_path: Path) -> set[int]:
             try:
                 row = json.loads(line)
                 appid = row.get("appid")
-                if appid is not None:
+                success = row.get("success", False)
+                if appid is not None and success:
                     processed.add(int(appid))
             except json.JSONDecodeError:
                 continue
+
+    return processed
+
+
+def get_all_processed_appids(output_dir: Path, exclude_file: Optional[Path] = None) -> set[int]:
+    processed = set()
+
+    for file_path in sorted(output_dir.glob("steam_appdetails_*.jsonl")):
+        if exclude_file is not None and file_path.resolve() == exclude_file.resolve():
+            continue
+
+        with file_path.open("r", encoding="utf-8") as f:
+            for line in f:
+                try:
+                    row = json.loads(line)
+                    appid = row.get("appid")
+                    success = row.get("success", False)
+                    if appid is not None and success:
+                        processed.add(int(appid))
+                except json.JSONDecodeError:
+                    continue
 
     return processed
 
@@ -158,7 +179,7 @@ def make_failure_row(appid: int, ingested_at: str, partition_date: str, error_te
 
 
 def calculate_backoff(attempt: int) -> float:
-    exp = min(BACKOFF_BASE_SECONDS * (2 ** attempt), BACKOFF_MAX_SECONDS)
+    exp = min(BACKOFF_BASE_SECONDS * (2**attempt), BACKOFF_MAX_SECONDS)
     jitter = random.uniform(0, 1)
     return exp + jitter
 
@@ -263,7 +284,7 @@ def main() -> None:
         catalog_file = get_latest_catalog_file()
         print(f"No catalog file for {args.date}. Falling back to latest: {catalog_file}")
 
-    appids = read_appids_from_catalog(catalog_file)
+    catalog_appids = read_appids_from_catalog(catalog_file)
 
     partition_date = args.date
     ingested_at = datetime.now(timezone.utc).isoformat()
@@ -271,21 +292,29 @@ def main() -> None:
     output_path = OUTPUT_DIR / f"steam_appdetails_{partition_date}.jsonl"
     failed_path = FAILED_DIR / f"steam_appdetails_failed_{partition_date}.txt"
 
-    processed_appids = get_processed_appids(output_path)
-    if processed_appids:
-        print(f"Found {len(processed_appids)} already processed appids in {output_path}")
+    historically_processed_appids = get_all_processed_appids(
+        OUTPUT_DIR,
+        exclude_file=output_path if output_path.exists() else None,
+    )
+    today_processed_appids = get_processed_appids_from_file(output_path)
 
-    appids = [appid for appid in appids if appid not in processed_appids]
+    already_processed_appids = historically_processed_appids | today_processed_appids
+
+    print(f"Catalog contains {len(catalog_appids)} appids")
+    print(f"Historically processed appids: {len(historically_processed_appids)}")
+    print(f"Already processed in today's file: {len(today_processed_appids)}")
+
+    appids = [appid for appid in catalog_appids if appid not in already_processed_appids]
 
     if args.limit is not None:
         appids = appids[:args.limit]
 
     total = len(appids)
     if total == 0:
-        print("No appids left to process.")
+        print("No new appids left to process.")
         return
 
-    print(f"Starting/resuming appdetails ingestion for {total} appids")
+    print(f"Starting incremental appdetails ingestion for {total} new appids")
     print(f"Rate limiter: {RATE_LIMIT_REQUESTS} requests / {RATE_LIMIT_WINDOW_SECONDS} seconds")
 
     session = requests.Session()

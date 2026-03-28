@@ -5,7 +5,10 @@ from dotenv import load_dotenv
 from google.cloud import storage
 from datetime import datetime
 
-load_dotenv()
+BASE_DIR = Path(__file__).resolve().parent.parent
+ENV_PATH = BASE_DIR / ".env"
+
+load_dotenv(ENV_PATH)
 
 GCP_BUCKET_NAME = os.getenv("GCP_BUCKET_NAME")
 today = datetime.now().strftime("%Y-%m-%d")
