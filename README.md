@@ -186,17 +186,13 @@ Staging:
 - clean raw data
 - extract JSON fields
 - standardize schema
-
-Intermediate:
-- flatten arrays (genres, categories)
-- normalize structure
+- Get latest partition
 
 Marts:
-- game-level dataset
-- genre distribution
-- release trends
-- review metrics
-
+- Create flattened genre and category tables
+- Boolean columns for is_multiplayer, is_coop etc.
+- Join review metrics
+- Ready for dashboard analysis
 
 ## Workflow orchestration
 
@@ -256,8 +252,8 @@ Optional / not recommended: Start fetching Steam data
 
 Recommended - Use sample data:
 - rename "sample_data" folder to "data"
-- python scripts/upload_raw_to_gcs.py --date 2026-03-28  
-- python scripts/gcs_to_bq.py --date 2026-03-28  
+- python scripts/upload_raw_to_gcs.py 2026-03-26
+- python scripts/gcs_to_bq.py 2026-03-26
 cd dbt  
 source .venv/bin/activate
 dbt build
